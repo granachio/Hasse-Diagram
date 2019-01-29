@@ -37,7 +37,7 @@ export default class Linea extends Component {
     }
     render() {
         const punti = this.linea();
-        return punti ? <Riga {...punti} {...this.props} /> : null;
+        return <Riga {...punti} />;
     }
 }
 Linea.propTypes = Object.assign({}, {

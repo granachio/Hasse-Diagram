@@ -36,7 +36,6 @@ export default class Programma extends Component {
             let parts = mat.split(",");
             first.push(parts[0]);
             second.push(parts[1]);
-
         }
         if (!this.checkInsieme(insiemeA, first) || !this.checkInsieme(insiemeB, second)) {
             alert("Relazione incompatibile con Insiemi di partenza e arrivo.");
@@ -58,7 +57,7 @@ export default class Programma extends Component {
             hasse = <Hasse relation={c} />;
         }
         this.setState({ ok: true, riflessiva, simmetrica, transitiva, antisimmetrica, reticolo, equivalenza, poset, eleMax, eleMin, hasse });
-
+            this.forceUpdate();
     }
     isRiflessiva(a, b) {
         if (a.length !== b.length)

@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 export default class Riga extends Component {
+    
     render() {
         const { x0, y0, x1, y1 } = this.props;
         const dy = y1 - y0;
@@ -13,21 +14,16 @@ export default class Riga extends Component {
             left: `${x0}px`,
             width: `${length}px`,
             transform: `rotate(${angolo}deg)`,
-            transformOrigin: '0 0'
-        };
-        const style = {
+            transformOrigin: '0 0',
             borderTopColor: 'black',
             borderTopStyle: 'solid',
             borderTopWidth: 4
         };
-        const props = {
-            className: this.props.className,
-            style: Object.assign({}, style, linea)
-        };
+       
         return (
             <div
-                ref={(el) => { this.el = el; }}
-                {...props}
+                style={linea}
+
             />
         );
     }
