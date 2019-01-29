@@ -18,7 +18,7 @@ export default class Hasse extends Component {
                 punti.push(to);
         });
         punti.forEach((key) => {
-            puntihtml.push(<Punto className={key} top={80 * key+"px"} left="20px">{key}</Punto >);
+            puntihtml.push(<Punto className={key} top={80 * key+475+"px"} left="180px">{key}</Punto >);
         });
         return <div>{puntihtml}</div>;
     }
