@@ -39,15 +39,64 @@ export default class Hasse extends Component {
             else
                 puntiposition.push([key]);
         });
+        let max = 0;
+        for (let i = 0; i < puntiposition.length; i++) {
+            if (puntiposition[i].length > max) {
+                max = puntiposition[i].length;
+            }
+        }
+        let num = max * 2 - 1;
+        for (let i = 0; i < puntiposition.length; i++) {
+            for (let j = 0; j < puntiposition[i].length - 1; j++) {
+                if (puntiposition[i][j] !== "" && puntiposition[i][j+1]!=="")
+                puntiposition[i].splice(j+1, 0, "");
+            }
+            while (puntiposition[i].length < num) {
+                puntiposition[i].splice(0, 0, "");
+                puntiposition[i].push("");
+            }
+        }
         console.log(puntiposition);
+        
         for (let i = 0; i < puntiposition.length; i++)
             for (let j = 0; j < puntiposition[i].length; j++) {
+                if(puntiposition[i][j]!=="")
                 puntihtml.push(<Punto className={puntiposition[i][j]} top={80 * i + 475 + "px"} left={80 * j + 180 + "px"}>{puntiposition[i][j]}</Punto >);
             }
-        this.timerr = setTimeout(() => {
-            this.setState({ attivo: true });
-        }, 1);
+        if (!this.state.attivo) {
+            this.timerr = setTimeout(() => {
+
+                this.setState({ attivo: true });
+            }, 1);
+        }
         return <div>{puntihtml}</div>;
+    }
+    coppiaTransitiva(a1, b1, r) {
+        let a = [];
+        let b = [];
+        r.forEach((m) => {
+
+            let parts = m.split(",");
+            if (parts[0] !== parts[1]) {
+                a.push(parts[0]);
+                b.push(parts[1]);
+            }
+        });
+        if (a.length !== b.length)
+            return false;
+        console.log(a);
+        for (let i = 0; i < b.length; i++) {
+            if (a[i]!==b[i]) {
+                if (b[i]===b1 && a[i]!==a1) {
+                    let sx = a[i];
+                    for (let j = 0; j < a.length; j++) {
+                        if (a[j]===a1 && b[j]===sx)
+                            return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
     ordine(a, b, r) {
         let first = [];
@@ -76,7 +125,7 @@ export default class Hasse extends Component {
         duple.forEach((key) => {
             const from = key.split(',')[0];
             const to = key.split(',')[1];
-            if (from !== to)
+            if (from !== to&&!this.coppiaTransitiva(from,to,duple))
                 if (linee.indexOf(from + "," + to) === -1 && linee.indexOf(to + "," + from) === -1)
                     linee.push(from + "," + to);
         });
