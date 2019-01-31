@@ -11,6 +11,7 @@ export default class Programma extends Component {
         transitiva: false,
         antisimmetrica: false,
         reticolo: false,
+        insiemeTotalmenteOrdinato: false,
         equivalenza: false,
         poset: false,
         eleMax: [],
@@ -23,7 +24,7 @@ export default class Programma extends Component {
         });
     };
     controlla = () => {
-        this.setState({ ok: false, hasse: null, riflessiva: false, simmetrica: false, transitiva: false, antisimmetrica: false, reticolo: false, equivalenza: false, poset: false, eleMax: [], eleMin: [] });
+        this.setState({ ok: false, hasse: null, riflessiva: false, simmetrica: false, transitiva: false, antisimmetrica: false, reticolo: false, insiemeTotalmenteOrdinato: false, equivalenza: false, poset: false, eleMax: [], eleMin: [] });
         const c = this.state.R;
         const insiemeA = this.state.A.split(',');
         const insiemeB = this.state.B.split(',');
@@ -46,6 +47,7 @@ export default class Programma extends Component {
         let transitiva = this.isTransitiva(first, second);
         let antisimmetrica = this.isAntisimmetrica(first, second);
         let reticolo = this.isReticolo(first, second);
+        let insiemeTotalmenteOrdinato = false;
         let equivalenza = riflessiva && simmetrica && transitiva;
         let poset = riflessiva && antisimmetrica && transitiva;
         let eleMax = [];
@@ -55,8 +57,9 @@ export default class Programma extends Component {
             eleMax = this.elementiMassimali(first, second);
             eleMin = this.elementiMinimali(first, second);
             hasse = <Hasse relation={c} />;
+            insiemeTotalmenteOrdinato = this.isInsiemeTotalmenteOrdinato(first, second);
         }
-        this.setState({ ok: true, riflessiva, simmetrica, transitiva, antisimmetrica, reticolo, equivalenza, poset, eleMax, eleMin, hasse });
+        this.setState({ ok: true, riflessiva, simmetrica, transitiva, antisimmetrica, reticolo, insiemeTotalmenteOrdinato, equivalenza, poset, eleMax, eleMin, hasse });
             this.forceUpdate();
     }
     isRiflessiva(a, b) {
@@ -219,6 +222,36 @@ export default class Programma extends Component {
         }
         return true;
     }
+    // Funzione da richiamare solo su POSET.
+    isInsiemeTotalmenteOrdinato(a, b){
+        var a1 = [], b1 = [];
+        let index = 0;
+        for (let i = 0; i < a.length; i++){
+            if(!a1.includes(a[i])){
+                a1[index] = a[i];
+                b1[index] = b[i];
+                index++;
+            }
+        }
+        for (let i = 0; i < a1.length; i++){
+            for (let j = 0; j < b1.length; j++){
+                let sx = a1[i];
+                let dx = b1[j];
+                let match = false;
+                if(sx !== dx){
+                    for (let k = 0; k < a.length; k++){
+                        if((a[k] === sx && b[k] === dx) || (a[k] === dx && b[k] === sx)){
+                            match = true;
+                            break;
+                        }
+                    }
+                    if(!match)
+                        return false;
+                }
+            }
+        }
+        return true;
+    }
     render() {
         return (
             <div>
@@ -254,6 +287,10 @@ export default class Programma extends Component {
                         <div style={{ display: 'flex' }}>
                             <p>Insieme parzialmente ordinato (poset):&nbsp;</p>
                             <p>{this.state.poset ? "Sì" : "No"}</p>
+                        </div>
+                        <div style={{ display: 'flex' }}>
+                            <p>Insieme totalmente ordinato:&nbsp;</p>
+                            <p>{this.state.insiemeTotalmenteOrdinato ? "Sì" : "No"}</p>
                         </div>
                         <div style={{ display: 'flex' }}>
                             <p>Reticolo:&nbsp;</p>
