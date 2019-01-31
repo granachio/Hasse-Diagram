@@ -2,6 +2,11 @@ import React, { Component } from 'react';
 import Hasse from "../utils/Hasse";
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Card from '@material-ui/core/Card';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import '../css/index.css';
 export default class Programma extends Component {
     state = {
         A: '',
@@ -257,30 +262,45 @@ export default class Programma extends Component {
     render() {
         return (
             <div>
-                <table>
-                    <tr><td> <TextField
-                             label="Insieme Partenza A: 1,2,3"
-                             margin="normal"
-                             variant="outlined"
-                             onChange={this.cambia('A')}></TextField></td></tr>
-                    <tr><td><TextField
-                            label="Insieme Arrivo B: 1,2,3"
-                            margin="normal"
-                            variant="outlined"
-                            onChange={this.cambia('B')}></TextField></td></tr>
-                    <tr><td><TextField
-                            label="Relazione AxB (<1,2>,<3,2>)"
-                            margin="normal"
-                            variant="outlined"
-                            onChange={this.cambia('R')}></TextField></td></tr>
-                    <tr><td><Button
-                            variant="contained"
-                            size="large"
-                            color="primary"
-                            style={{ backgroundColor: '#448aff' }}
-                            onClick={this.controlla}>Calcola
-                            </Button></td></tr>
-                </table>
+                <AppBar position="static" color="primary" className="header">
+                    <Toolbar>
+                            <Typography variant="h6" color="inherit">
+                                Hasse-Diagram Calculator
+                            </Typography>
+                    </Toolbar>
+                </AppBar>
+                <center>
+                    <Card>
+                        <table className="tabla">
+                            <tr><td><TextField
+                                    label="Insieme Partenza A: 1,2,3"
+                                    margin="normal"
+                                    variant="outlined"
+                                    onChange={this.cambia('A')}
+                                    className="textfield"></TextField></td></tr>
+                            <tr><td><TextField
+                                    label="Insieme Arrivo B: 1,2,3"
+                                    margin="normal"
+                                    variant="outlined"
+                                    onChange={this.cambia('B')}
+                                    className="textfield"></TextField></td></tr>
+                            <tr><td><TextField
+                                    label="Relazione AxB (<1,2>,<3,2>)"
+                                    margin="normal"
+                                    variant="outlined"
+                                    onChange={this.cambia('R')}
+                                    className="textfield"></TextField></td></tr>
+                            <tr><center><td><Button
+                                    variant="contained"
+                                    size="large"
+                                    color="primary"
+                                    style={{ backgroundColor: '#448aff' }}
+                                    onClick={this.controlla}>Calcola
+                                    </Button></td></center></tr>
+                        </table>
+                    </Card>
+                </center>
+                <Card className="card">
                 {this.state.ok ?
                     <div>
                         <div style={{ display: 'flex' }}>
@@ -328,7 +348,7 @@ export default class Programma extends Component {
                             <p>{this.state.hasse !== null ? this.state.hasse : "N/A"}</p>
                         </div>
                     </div>
-                    : ''}
+                    : ''}</Card>
             </div>
         );
     }

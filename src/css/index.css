@@ -1,0 +1,35 @@
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 768px) {
+    .textfield {
+        width: 100%;
+    }
+    .tabla {
+        width: 95%;
+    }
+} 
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+    .textfield {
+        width: 100%;
+    }
+    .tabla {
+        width: 70%;
+    }
+} 
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+    .tabla {
+        width: 50%;
+    }
+}
+.card {
+    margin-top: 0.5%;
+    border-color: #3f51b5;
+}
+.header {
+    background-color: rgb(68, 138, 255) !important;
+    margin-bottom: 0.5%;
+    border-radius: 4px;
+}
