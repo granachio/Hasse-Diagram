@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import Hasse from "../utils/Hasse";
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 export default class Programma extends Component {
     state = {
         A: '',
@@ -255,13 +257,30 @@ export default class Programma extends Component {
     render() {
         return (
             <div>
-                <input type="text" style={{ width: '200px' }} placeholder="Insieme Partenza A (1,2,3)" onChange={this.cambia('A')} />
-                <br />
-                <input type="text" style={{ width: '200px' }} placeholder="Insieme Arrivo B (1,2)" onChange={this.cambia('B')} />
-                <br />
-                <input type="text" style={{ width: '200px' }} placeholder="Relazione AxB (<1,2>,<3,2>)" onChange={this.cambia('R')} />
-                <br />
-                <input type="button" value="Calcola" onClick={this.controlla} />
+                <table>
+                    <tr><td> <TextField
+                             label="Insieme Partenza A: 1,2,3"
+                             margin="normal"
+                             variant="outlined"
+                             onChange={this.cambia('A')}></TextField></td></tr>
+                    <tr><td><TextField
+                            label="Insieme Arrivo B: 1,2,3"
+                            margin="normal"
+                            variant="outlined"
+                            onChange={this.cambia('B')}></TextField></td></tr>
+                    <tr><td><TextField
+                            label="Relazione AxB (<1,2>,<3,2>)"
+                            margin="normal"
+                            variant="outlined"
+                            onChange={this.cambia('R')}></TextField></td></tr>
+                    <tr><td><Button
+                            variant="contained"
+                            size="large"
+                            color="primary"
+                            style={{ backgroundColor: '#448aff' }}
+                            onClick={this.controlla}>Calcola
+                            </Button></td></tr>
+                </table>
                 {this.state.ok ?
                     <div>
                         <div style={{ display: 'flex' }}>
