@@ -6,8 +6,87 @@ import Card from '@material-ui/core/Card';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import { InvertColors, Language } from '@material-ui/icons';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import '../css/index.css';
-export default class Programma extends Component {
+import { withStyles } from '@material-ui/core/styles';
+const styles = {
+    header: {
+        flex: '0 1 auto',
+        position: 'relative',
+        'z-index': 1,
+        'box-shadow': 'unset'
+    },
+    toolbar: {
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'noWrap',
+        overflow: 'hidden'
+    }
+};
+const lingue = [
+    'Italiano', 'English'
+];
+const traduzioni = {
+    Italiano: {
+        titolo: "Calcolatore diagrammi di Hasse",
+        insA: "Insieme Partenza A: 1,2,3",
+        insB: "Insieme Arrivo B: 1,2,3",
+        R: "Relazione AxB (<1,2>,<3,2>)",
+        calcola: "Calcola",
+        riflessiva: "Riflessiva",
+        transitiva: "Transitiva",
+        simmetrica: "Simmetrica",
+        antisimmetrica: "Antisimmetrica",
+        equivalenza: "Relazione di Equivalenza",
+        poset: "Insieme parzialmente ordinato (poset)",
+        tordinato: "Insieme totalmente ordinato",
+        reticolo: "Reticolo",
+        massimali: "Massimali",
+        minimali: "Minimali",
+        hasse: "Diagramma di Hasse",
+        si: "Sì",
+        no: "No",
+        incomp: "Relazione incompatibile con insiemi di partenza e arrivo!",
+        invalid: "Insiemi di partenza non validi!",
+        errore: "Errore nell'input",
+        chiudi: "Chiudi"
+    },
+    English: {
+        titolo: "Hasse-Diagram Calculator",
+        insA: "Departure Set A: 1,2,3",
+        insB: "Arrival Set B: 1,2,3",
+        R: "Relation AxB (<1,2>,<3,2>)",
+        calcola: "Execute",
+        riflessiva: "Reflexive",
+        transitiva: "Transitive",
+        simmetrica: "Symmetric",
+        antisimmetrica: "Antisymmetric",
+        equivalenza: "Equivalence Relation",
+        poset: "Partially Ordered Set (poset)",
+        tordinato: "Totally Ordered Set",
+        reticolo: "Lattice",
+        massimali: "Maximal",
+        minimali: "Minimal",
+        hasse: "Hasse Diagram",
+        si: "Yes",
+        no: "No",
+        incomp: "Incompatible relation with sets of departure and arrival!",
+        invalid: "Invalid Departure and Arrival Sets!",
+        errore: "Input Error",
+        chiudi: "Close"
+    }
+};
+const ITEM_HEIGHT = 48;
+class Programma extends Component {
     state = {
         A: '',
         B: '',
@@ -23,18 +102,37 @@ export default class Programma extends Component {
         poset: false,
         eleMax: [],
         eleMin: [],
-        hasse: null
+        hasse: null,
+        aperto: null,
+        daperto: false,
+        dialogo: '',
+        lingua: "Italiano"
     };
     cambia = (name) => event => {
         this.setState({
             [name]: event.target.value
         });
     };
+    chiudiLingue = () => {
+        this.setState({ aperto: null });
+    };
+    cambiaLingua = (lingua) => {
+        this.setState({ aperto: null, lingua });
+    }
+    apriLingue = event => {
+        this.setState({ aperto: event.currentTarget });
+    };
+    apriDialogo = testo => {
+        this.setState({ daperto: true, dialogo: testo });
+    };
+    chiudiDialogo = () => {
+        this.setState({ daperto: false });
+    };
     controlla = () => {
         this.setState({ ok: false, hasse: null, riflessiva: false, simmetrica: false, transitiva: false, antisimmetrica: false, reticolo: false, insiemeTotalmenteOrdinato: false, equivalenza: false, poset: false, eleMax: [], eleMin: [] });
         const c = this.state.R;
-        if(this.state.A.length === 0 || this.state.B.length === 0){
-            alert("Insiemi di partenza non validi!");
+        if (this.state.A.length === 0 || this.state.B.length === 0) {
+            this.apriDialogo(traduzioni[this.state.lingua].invalid);
             return;
         }
         const insiemeA = this.state.A.split(',');
@@ -50,7 +148,7 @@ export default class Programma extends Component {
             second.push(parts[1]);
         }
         if (!this.checkInsieme(insiemeA, first) || !this.checkInsieme(insiemeB, second)) {
-            alert("Relazione incompatibile con Insiemi di partenza e arrivo.");
+            this.apriDialogo(traduzioni[this.state.lingua].incomp);
             return;
         }
         let riflessiva = this.isRiflessiva(first, second);
@@ -71,7 +169,7 @@ export default class Programma extends Component {
             insiemeTotalmenteOrdinato = this.isInsiemeTotalmenteOrdinato(first, second);
         }
         this.setState({ ok: true, riflessiva, simmetrica, transitiva, antisimmetrica, reticolo, insiemeTotalmenteOrdinato, equivalenza, poset, eleMax, eleMin, hasse });
-            this.forceUpdate();
+        this.forceUpdate();
     }
     isRiflessiva(a, b) {
         if (a.length !== b.length)
@@ -234,29 +332,29 @@ export default class Programma extends Component {
         return true;
     }
     // Funzione da richiamare solo su POSET.
-    isInsiemeTotalmenteOrdinato(a, b){
+    isInsiemeTotalmenteOrdinato(a, b) {
         var a1 = [], b1 = [];
         let index = 0;
-        for (let i = 0; i < a.length; i++){
-            if(!a1.includes(a[i])){
+        for (let i = 0; i < a.length; i++) {
+            if (!a1.includes(a[i])) {
                 a1[index] = a[i];
                 b1[index] = b[i];
                 index++;
             }
         }
-        for (let i = 0; i < a1.length; i++){
-            for (let j = 0; j < b1.length; j++){
+        for (let i = 0; i < a1.length; i++) {
+            for (let j = 0; j < b1.length; j++) {
                 let sx = a1[i];
                 let dx = b1[j];
                 let match = false;
-                if(sx !== dx){
-                    for (let k = 0; k < a.length; k++){
-                        if((a[k] === sx && b[k] === dx) || (a[k] === dx && b[k] === sx)){
+                if (sx !== dx) {
+                    for (let k = 0; k < a.length; k++) {
+                        if ((a[k] === sx && b[k] === dx) || (a[k] === dx && b[k] === sx)) {
                             match = true;
                             break;
                         }
                     }
-                    if(!match)
+                    if (!match)
                         return false;
                 }
             }
@@ -264,96 +362,172 @@ export default class Programma extends Component {
         return true;
     }
     render() {
+        const { classes } = this.props;
         return (
             <div>
-                <AppBar position="static" color="primary" className="header">
-                    <Toolbar>
-                            <Typography variant="h6" color="inherit">
-                                Hasse-Diagram Calculator
-                            </Typography>
+                <Dialog
+                    open={this.state.daperto}
+                    onClose={this.chiudiDialogo}
+                >
+                    <DialogTitle>{traduzioni[this.state.lingua].errore}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            {this.state.dialogo}
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.chiudiDialogo} color="primary">
+                            {traduzioni[this.state.lingua].chiudi}
+                        </Button>
+
+                    </DialogActions>
+                </Dialog>
+                <AppBar position="static" color="default" className={classes.header}>
+                    <Toolbar className={classes.toolbar}>
+                        <Typography variant="h6" color="inherit" className={classes.flex}>
+                            {traduzioni[this.state.lingua].titolo}
+                        </Typography>
+                        <div >
+                            <IconButton
+                                aria-label="Lingua"
+                                aria-owns={this.state.aperto ? 'long-menu' : undefined}
+                                aria-haspopup="true"
+                                onClick={this.apriLingue}
+                                className={classes.lingua}
+                            >
+                                <Language />
+                            </IconButton>
+                            <Menu
+                                id="long-menu"
+                                anchorEl={this.state.aperto}
+                                open={this.state.aperto}
+                                onClose={this.chiudiLingue}
+                                PaperProps={{
+                                    style: {
+                                        maxHeight: ITEM_HEIGHT * 4.5,
+                                        width: 200,
+                                    },
+                                }}
+                            >
+                                {lingue.map(lingua => (
+                                    <MenuItem key={lingua} selected={lingua === this.state.lingua} onClick={() => this.cambiaLingua(lingua)}>
+                                        {lingua}
+                                    </MenuItem>
+                                ))}
+                            </Menu>
+                            <IconButton className={classes.colore} aria-label="Chiaro/Scuro" onClick={this.props.tema}>
+                                <InvertColors />
+                            </IconButton>
+                        </div>
                     </Toolbar>
+
                 </AppBar>
+
                 <center>
                     <Card>
                         <table className="tabla">
-                            <tr><td><TextField
-                                    label="Insieme Partenza A: 1,2,3"
-                                    margin="normal"
-                                    variant="outlined"
-                                    onChange={this.cambia('A')}
-                                    className="textfield"></TextField></td></tr>
-                            <tr><td><TextField
-                                    label="Insieme Arrivo B: 1,2,3"
-                                    margin="normal"
-                                    variant="outlined"
-                                    onChange={this.cambia('B')}
-                                    className="textfield"></TextField></td></tr>
-                            <tr><td><TextField
-                                    label="Relazione AxB (<1,2>,<3,2>)"
-                                    margin="normal"
-                                    variant="outlined"
-                                    onChange={this.cambia('R')}
-                                    className="textfield"></TextField></td></tr>
-                            <tr><center><td><Button
-                                    variant="contained"
-                                    size="large"
-                                    color="primary"
-                                    style={{ backgroundColor: '#448aff' }}
-                                    onClick={this.controlla}>Calcola
-                                    </Button></td></center></tr>
+                            <tr>
+                                <td>
+                                    <TextField
+                                        label={traduzioni[this.state.lingua].insA}
+                                        margin="normal"
+                                        variant="outlined"
+                                        onChange={this.cambia('A')}
+                                        className="textfield"
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <TextField
+                                        label={traduzioni[this.state.lingua].insB}
+                                        margin="normal"
+                                        variant="outlined"
+                                        onChange={this.cambia('B')}
+                                        className="textfield"
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <TextField
+                                        label={traduzioni[this.state.lingua].R}
+                                        margin="normal"
+                                        variant="outlined"
+                                        onChange={this.cambia('R')}
+                                        className="textfield"
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <center>
+                                    <td>
+                                        <Button
+                                            variant="contained"
+                                            size="large"
+                                            color="primary"
+                                            style={{ backgroundColor: '#448aff' }}
+                                            onClick={this.controlla}
+                                        >
+                                            {traduzioni[this.state.lingua].calcola}
+                                        </Button>
+                                    </td>
+                                </center>
+                            </tr>
                         </table>
                     </Card>
                 </center>
                 <Card className="card">
-                {this.state.ok ?
-                    <div>
-                        <div style={{ display: 'flex' }}>
-                            <p>Riflessiva:&nbsp;</p>
-                            <p>{this.state.riflessiva ? "Sì" : "No"}</p>
+                    {this.state.ok ?
+                        <div>
+                            <div style={{ display: 'flex' }}>
+                                <p>{traduzioni[this.state.lingua].riflessiva}:&nbsp;</p>
+                                <p>{this.state.riflessiva ? traduzioni[this.state.lingua].si : traduzioni[this.state.lingua].no}</p>
+                            </div>
+                            <div style={{ display: 'flex' }}>
+                                <p>{traduzioni[this.state.lingua].transitiva}:&nbsp;</p>
+                                <p>{this.state.transitiva ? traduzioni[this.state.lingua].si : traduzioni[this.state.lingua].no}</p>
+                            </div>
+                            <div style={{ display: 'flex' }}>
+                                <p>{traduzioni[this.state.lingua].simmetrica}:&nbsp;</p>
+                                <p>{this.state.simmetrica ? traduzioni[this.state.lingua].si : traduzioni[this.state.lingua].no}</p>
+                            </div>
+                            <div style={{ display: 'flex' }}>
+                                <p>{traduzioni[this.state.lingua].antisimmetrica}:&nbsp;</p>
+                                <p>{this.state.antisimmetrica ? traduzioni[this.state.lingua].si : traduzioni[this.state.lingua].no}</p>
+                            </div>
+                            <div style={{ display: 'flex' }}>
+                                <p>{traduzioni[this.state.lingua].equivalenza}:&nbsp;</p>
+                                <p>{this.state.equivalenza ? traduzioni[this.state.lingua].si : traduzioni[this.state.lingua].no}</p>
+                            </div>
+                            <div style={{ display: 'flex' }}>
+                                <p>{traduzioni[this.state.lingua].poset}:&nbsp;</p>
+                                <p>{this.state.poset ? traduzioni[this.state.lingua].si : traduzioni[this.state.lingua].no}</p>
+                            </div>
+                            <div style={{ display: 'flex' }}>
+                                <p>{traduzioni[this.state.lingua].tordinato}:&nbsp;</p>
+                                <p>{this.state.insiemeTotalmenteOrdinato ? traduzioni[this.state.lingua].si : traduzioni[this.state.lingua].no}</p>
+                            </div>
+                            <div style={{ display: 'flex' }}>
+                                <p>{traduzioni[this.state.lingua].reticolo}:&nbsp;</p>
+                                <p>{this.state.reticolo ? traduzioni[this.state.lingua].si : traduzioni[this.state.lingua].no}</p>
+                            </div>
+                            <div style={{ display: 'flex' }}>
+                                <p>{traduzioni[this.state.lingua].massimali}:&nbsp;</p>
+                                <p>{this.state.poset ? this.state.eleMax.join(',') : "N/A"}</p>
+                            </div>
+                            <div style={{ display: 'flex' }}>
+                                <p>{traduzioni[this.state.lingua].minimali}:&nbsp;</p>
+                                <p>{this.state.poset ? this.state.eleMin.join(',') : "N/A"}</p>
+                            </div>
+                            <div style={{ display: 'flex' }}>
+                                <p>{traduzioni[this.state.lingua].hasse}:</p>
+                                <p>{this.state.hasse !== null ? this.state.hasse : "N/A"}</p>
+                            </div>
                         </div>
-                        <div style={{ display: 'flex' }}>
-                            <p>Transitiva:&nbsp;</p>
-                            <p>{this.state.transitiva ? "Sì" : "No"}</p>
-                        </div>
-                        <div style={{ display: 'flex' }}>
-                            <p>Simmetrica:&nbsp;</p>
-                            <p>{this.state.simmetrica ? "Sì" : "No"}</p>
-                        </div>
-                        <div style={{ display: 'flex' }}>
-                            <p>Antisimmetrica:&nbsp;</p>
-                            <p>{this.state.antisimmetrica ? "Sì" : "No"}</p>
-                        </div>
-                        <div style={{ display: 'flex' }}>
-                            <p>Relazione di Equivalenza:&nbsp;</p>
-                            <p>{this.state.equivalenza ? "Sì" : "No"}</p>
-                        </div>
-                        <div style={{ display: 'flex' }}>
-                            <p>Insieme parzialmente ordinato (poset):&nbsp;</p>
-                            <p>{this.state.poset ? "Sì" : "No"}</p>
-                        </div>
-                        <div style={{ display: 'flex' }}>
-                            <p>Insieme totalmente ordinato:&nbsp;</p>
-                            <p>{this.state.insiemeTotalmenteOrdinato ? "Sì" : "No"}</p>
-                        </div>
-                        <div style={{ display: 'flex' }}>
-                            <p>Reticolo:&nbsp;</p>
-                            <p>{this.state.reticolo ? "Sì" : "No"}</p>
-                        </div>
-                        <div style={{ display: 'flex' }}>
-                            <p>Massimali:&nbsp;</p>
-                            <p>{this.state.poset ? this.state.eleMax.join(',') : "N/A"}</p>
-                        </div>
-                        <div style={{ display: 'flex' }}>
-                            <p>Minimali:&nbsp;</p>
-                            <p>{this.state.poset ? this.state.eleMin.join(',') : "N/A"}</p>
-                        </div>
-                        <div style={{ display: 'flex' }}>
-                            <p>Diagramma di Hasse:</p>
-                            <p>{this.state.hasse !== null ? this.state.hasse : "N/A"}</p>
-                        </div>
-                    </div>
-                    : ''}</Card>
+                        : ''}</Card>
             </div>
         );
     }
 }
+export default withStyles(styles)(Programma);
