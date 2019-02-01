@@ -61,7 +61,7 @@ export default class Hasse extends Component {
         for (let i = 0; i < puntiposition.length; i++)
             for (let j = 0; j < puntiposition[i].length; j++) {
                 if(puntiposition[i][j]!=="")
-                puntihtml.push(<Punto className={puntiposition[i][j]} top={80 * i + 475 + "px"} left={80 * j + 180 + "px"}>{puntiposition[i][j]}</Punto >);
+                puntihtml.push(<Punto className={puntiposition[i][j]} top={80 * i + 1000 + "px"} left={80 * j + 180 + "px"}>{puntiposition[i][j]}</Punto >);
             }
         if (!this.state.attivo) {
             this.timerr = setTimeout(() => {

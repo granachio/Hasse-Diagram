@@ -15,6 +15,11 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import '../css/index.css';
 import { withStyles } from '@material-ui/core/styles';
 const styles = {
@@ -37,7 +42,7 @@ const lingue = [
 ];
 const traduzioni = {
     Italiano: {
-        titolo: "Calcolatore diagrammi di Hasse",
+        titolo: "Hasse-Diagram",
         insA: "Insieme Partenza A: 1,2,3",
         insB: "Insieme Arrivo B: 1,2,3",
         R: "Relazione AxB (<1,2>,<3,2>)",
@@ -58,10 +63,11 @@ const traduzioni = {
         incomp: "Relazione incompatibile con insiemi di partenza e arrivo!",
         invalid: "Insiemi di partenza non validi!",
         errore: "Errore nell'input",
-        chiudi: "Chiudi"
+        chiudi: "Chiudi",
+        proprieta: "Proprietà"
     },
     English: {
-        titolo: "Hasse-Diagram Calculator",
+        titolo: "Hasse-Diagram",
         insA: "Departure Set A: 1,2,3",
         insB: "Arrival Set B: 1,2,3",
         R: "Relation AxB (<1,2>,<3,2>)",
@@ -73,7 +79,7 @@ const traduzioni = {
         equivalenza: "Equivalence Relation",
         poset: "Partially Ordered Set (poset)",
         tordinato: "Totally Ordered Set",
-        reticolo: "Lattice",
+        reticolo: "Grid",
         massimali: "Maximal",
         minimali: "Minimal",
         hasse: "Hasse Diagram",
@@ -82,7 +88,8 @@ const traduzioni = {
         incomp: "Incompatible relation with sets of departure and arrival!",
         invalid: "Invalid Departure and Arrival Sets!",
         errore: "Input Error",
-        chiudi: "Close"
+        chiudi: "Close",
+        proprieta: "Properties"
     }
 };
 const ITEM_HEIGHT = 48;
@@ -379,15 +386,14 @@ class Programma extends Component {
                         <Button onClick={this.chiudiDialogo} color="primary">
                             {traduzioni[this.state.lingua].chiudi}
                         </Button>
-
                     </DialogActions>
                 </Dialog>
-                <AppBar position="static" color="default" className={classes.header}>
+                <AppBar position="static" color="default" className="header">
                     <Toolbar className={classes.toolbar}>
                         <Typography variant="h6" color="inherit" className={classes.flex}>
                             {traduzioni[this.state.lingua].titolo}
                         </Typography>
-                        <div >
+                        <div>
                             <IconButton
                                 aria-label="Lingua"
                                 aria-owns={this.state.aperto ? 'long-menu' : undefined}
@@ -395,7 +401,7 @@ class Programma extends Component {
                                 onClick={this.apriLingue}
                                 className={classes.lingua}
                             >
-                                <Language />
+                            <Language/>
                             </IconButton>
                             <Menu
                                 id="long-menu"
@@ -420,7 +426,6 @@ class Programma extends Component {
                             </IconButton>
                         </div>
                     </Toolbar>
-
                 </AppBar>
 
                 <center>
@@ -480,50 +485,109 @@ class Programma extends Component {
                 <Card className="card">
                     {this.state.ok ?
                         <div>
-                            <div style={{ display: 'flex' }}>
-                                <p>{traduzioni[this.state.lingua].riflessiva}:&nbsp;</p>
-                                <p>{this.state.riflessiva ? traduzioni[this.state.lingua].si : traduzioni[this.state.lingua].no}</p>
-                            </div>
-                            <div style={{ display: 'flex' }}>
-                                <p>{traduzioni[this.state.lingua].transitiva}:&nbsp;</p>
-                                <p>{this.state.transitiva ? traduzioni[this.state.lingua].si : traduzioni[this.state.lingua].no}</p>
-                            </div>
-                            <div style={{ display: 'flex' }}>
-                                <p>{traduzioni[this.state.lingua].simmetrica}:&nbsp;</p>
-                                <p>{this.state.simmetrica ? traduzioni[this.state.lingua].si : traduzioni[this.state.lingua].no}</p>
-                            </div>
-                            <div style={{ display: 'flex' }}>
-                                <p>{traduzioni[this.state.lingua].antisimmetrica}:&nbsp;</p>
-                                <p>{this.state.antisimmetrica ? traduzioni[this.state.lingua].si : traduzioni[this.state.lingua].no}</p>
-                            </div>
-                            <div style={{ display: 'flex' }}>
-                                <p>{traduzioni[this.state.lingua].equivalenza}:&nbsp;</p>
-                                <p>{this.state.equivalenza ? traduzioni[this.state.lingua].si : traduzioni[this.state.lingua].no}</p>
-                            </div>
-                            <div style={{ display: 'flex' }}>
-                                <p>{traduzioni[this.state.lingua].poset}:&nbsp;</p>
-                                <p>{this.state.poset ? traduzioni[this.state.lingua].si : traduzioni[this.state.lingua].no}</p>
-                            </div>
-                            <div style={{ display: 'flex' }}>
-                                <p>{traduzioni[this.state.lingua].tordinato}:&nbsp;</p>
-                                <p>{this.state.insiemeTotalmenteOrdinato ? traduzioni[this.state.lingua].si : traduzioni[this.state.lingua].no}</p>
-                            </div>
-                            <div style={{ display: 'flex' }}>
-                                <p>{traduzioni[this.state.lingua].reticolo}:&nbsp;</p>
-                                <p>{this.state.reticolo ? traduzioni[this.state.lingua].si : traduzioni[this.state.lingua].no}</p>
-                            </div>
-                            <div style={{ display: 'flex' }}>
-                                <p>{traduzioni[this.state.lingua].massimali}:&nbsp;</p>
-                                <p>{this.state.poset ? this.state.eleMax.join(',') : "N/A"}</p>
-                            </div>
-                            <div style={{ display: 'flex' }}>
-                                <p>{traduzioni[this.state.lingua].minimali}:&nbsp;</p>
-                                <p>{this.state.poset ? this.state.eleMin.join(',') : "N/A"}</p>
-                            </div>
-                            <div style={{ display: 'flex' }}>
-                                <p>{traduzioni[this.state.lingua].hasse}:</p>
-                                <p>{this.state.hasse !== null ? this.state.hasse : "N/A"}</p>
-                            </div>
+                            <center>
+                            <Table className="tabla">
+                                <TableHead>
+                                <TableRow>
+                                    <TableCell className="tableHead" align="left">{traduzioni[this.state.lingua].proprieta}</TableCell>
+                                    <TableCell className="tableHead" align="center">...</TableCell>
+                                </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row" align="left">
+                                            {traduzioni[this.state.lingua].riflessiva}:&nbsp;
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            {this.state.riflessiva ? traduzioni[this.state.lingua].si : traduzioni[this.state.lingua].no}
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row" align="left">
+                                            {traduzioni[this.state.lingua].transitiva}:&nbsp;
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            {this.state.transitiva ? traduzioni[this.state.lingua].si : traduzioni[this.state.lingua].no}
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row" align="left">
+                                            {traduzioni[this.state.lingua].simmetrica}:&nbsp;
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            {this.state.simmetrica ? traduzioni[this.state.lingua].si : traduzioni[this.state.lingua].no}
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row" align="left">
+                                            {traduzioni[this.state.lingua].antisimmetrica}:&nbsp;
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            {this.state.antisimmetrica ? traduzioni[this.state.lingua].si : traduzioni[this.state.lingua].no}
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row" align="left">
+                                            {traduzioni[this.state.lingua].equivalenza}:&nbsp;
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            {this.state.equivalenza ? traduzioni[this.state.lingua].si : traduzioni[this.state.lingua].no}
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row" align="left">
+                                            {traduzioni[this.state.lingua].poset}:&nbsp;
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            {this.state.poset ? traduzioni[this.state.lingua].si : traduzioni[this.state.lingua].no}
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row" align="left">
+                                            {traduzioni[this.state.lingua].tordinato}:&nbsp;
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            {this.state.insiemeTotalmenteOrdinato ? traduzioni[this.state.lingua].si : traduzioni[this.state.lingua].no}
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row" align="left">
+                                            {traduzioni[this.state.lingua].reticolo}:&nbsp;
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            {this.state.reticolo ? traduzioni[this.state.lingua].si : traduzioni[this.state.lingua].no}
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row" align="left">
+                                            {traduzioni[this.state.lingua].massimali}:&nbsp;
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            {this.state.poset ? this.state.eleMax.join(',') : "N/A"}
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row" align="left">
+                                            {traduzioni[this.state.lingua].minimali}:&nbsp;
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            {this.state.poset ? this.state.eleMin.join(',') : "N/A"}
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row" align="left">
+                                            {traduzioni[this.state.lingua].hasse}:
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            
+                                        </TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
+                            </center>
+                            <Card className="hasseCard">
+                                {this.state.hasse !== null ? this.state.hasse : "N/A"}
+                            </Card>
                         </div>
                         : ''}</Card>
             </div>
