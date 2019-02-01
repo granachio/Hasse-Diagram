@@ -33,6 +33,10 @@ export default class Programma extends Component {
     controlla = () => {
         this.setState({ ok: false, hasse: null, riflessiva: false, simmetrica: false, transitiva: false, antisimmetrica: false, reticolo: false, insiemeTotalmenteOrdinato: false, equivalenza: false, poset: false, eleMax: [], eleMin: [] });
         const c = this.state.R;
+        if(this.state.A.length === 0 || this.state.B.length === 0){
+            alert("Insiemi di partenza non validi!");
+            return;
+        }
         const insiemeA = this.state.A.split(',');
         const insiemeB = this.state.B.split(',');
         let pattern = new RegExp("<([a-zA-Z0-9]+,[a-zA-Z0-9]+)>", "ig");
