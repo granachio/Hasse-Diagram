@@ -55,27 +55,22 @@ export default class Hasse extends Component {
                 puntiposition[i].splice(0, 0, "");
                 puntiposition[i].push("");
             }
-        }
-        console.log(puntiposition);
-        
+        }    
         for (let i = 0; i < puntiposition.length; i++)
             for (let j = 0; j < puntiposition[i].length; j++) {
                 if(puntiposition[i][j]!=="")
-                puntihtml.push(<Punto className={puntiposition[i][j]} top={80 * i + 1000 + "px"} left={80 * j + 180 + "px"}>{puntiposition[i][j]}</Punto >);
+                puntihtml.push(<Punto className={puntiposition[i][j]} top={80 * i + "px"} left={80 * j+ "px"}>{puntiposition[i][j]}</Punto >);
             }
-        if (!this.state.attivo) {
             this.timerr = setTimeout(() => {
 
                 this.setState({ attivo: true });
-            }, 1);
-        }
-        return <div>{puntihtml}</div>;
+            }, 10);
+        return <div style={{margin:"0 auto", position: 'relative', height: 80 * (puntiposition.length-1)+25+"px",width:80*(num-1)+25+"px" }}>{puntihtml}</div>;
     }
     coppiaTransitiva(a1, b1, r) {
         let a = [];
         let b = [];
         r.forEach((m) => {
-
             let parts = m.split(",");
             if (parts[0] !== parts[1]) {
                 a.push(parts[0]);
@@ -84,7 +79,6 @@ export default class Hasse extends Component {
         });
         if (a.length !== b.length)
             return false;
-        console.log(a);
         for (let i = 0; i < b.length; i++) {
             if (a[i]!==b[i]) {
                 if (b[i]===b1 && a[i]!==a1) {
@@ -140,7 +134,7 @@ export default class Hasse extends Component {
         const { relation } = this.props;
         const duple = relation.slice(1, -1).split('>,<').sort();
         return (
-            <div>
+            <div style={{ margin: '25px' }}>
                 {this.punti(duple)}
                 {this.state.attivo?this.linee(duple):""}
             </div>

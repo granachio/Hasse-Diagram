@@ -388,13 +388,16 @@ class Programma extends Component {
                         </Button>
                     </DialogActions>
                 </Dialog>
-                <AppBar position="static" color="default" className="header">
+                <AppBar position="static" color="primary"
+                    style={{ backgroundColor: '#448aff' }} className="header"
+                >
                     <Toolbar className={classes.toolbar}>
                         <Typography variant="h6" color="inherit" className={classes.flex}>
                             {traduzioni[this.state.lingua].titolo}
                         </Typography>
                         <div>
                             <IconButton
+                                color="inherit"
                                 aria-label="Lingua"
                                 aria-owns={this.state.aperto ? 'long-menu' : undefined}
                                 aria-haspopup="true"
@@ -411,8 +414,8 @@ class Programma extends Component {
                                 PaperProps={{
                                     style: {
                                         maxHeight: ITEM_HEIGHT * 4.5,
-                                        width: 200,
-                                    },
+                                        width: 200
+                                    }
                                 }}
                             >
                                 {lingue.map(lingua => (
@@ -421,7 +424,7 @@ class Programma extends Component {
                                     </MenuItem>
                                 ))}
                             </Menu>
-                            <IconButton className={classes.colore} aria-label="Chiaro/Scuro" onClick={this.props.tema}>
+                            <IconButton className={classes.colore} aria-label="Chiaro/Scuro" onClick={this.props.tema} color="inherit">
                                 <InvertColors />
                             </IconButton>
                         </div>
@@ -482,6 +485,9 @@ class Programma extends Component {
                         </table>
                     </Card>
                 </center>
+                <Card className="hasseCard">
+                    {this.state.hasse}
+                </Card>
                 <Card className="card">
                     {this.state.ok ?
                         <div>
@@ -574,20 +580,10 @@ class Programma extends Component {
                                             {this.state.poset ? this.state.eleMin.join(',') : "N/A"}
                                         </TableCell>
                                     </TableRow>
-                                    <TableRow>
-                                        <TableCell component="th" scope="row" align="left">
-                                            {traduzioni[this.state.lingua].hasse}:
-                                        </TableCell>
-                                        <TableCell align="center">
-                                            
-                                        </TableCell>
-                                    </TableRow>
                                 </TableBody>
                             </Table>
                             </center>
-                            <Card className="hasseCard">
-                                {this.state.hasse !== null ? this.state.hasse : "N/A"}
-                            </Card>
+                           
                         </div>
                         : ''}</Card>
             </div>
