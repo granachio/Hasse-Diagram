@@ -61,10 +61,11 @@ const traduzioni = {
         si: "Sì",
         no: "No",
         incomp: "Relazione incompatibile con insiemi di partenza e arrivo!",
-        invalid: "Insiemi di partenza non validi!",
+        invalid: "Insiemi di partenza non validi! Ricorda: ogni elemento non può essere più lungo di 3 caratteri alfanumerici.",
         errore: "Errore nell'input",
         chiudi: "Chiudi",
-        proprieta: "Proprietà"
+        proprieta: "Proprietà",
+        invalidRelation: "Relazione non valida, prego usare il formato <1,2>,<3,2>"
     },
     English: {
         titolo: "Hasse-Diagram",
@@ -86,10 +87,11 @@ const traduzioni = {
         si: "Yes",
         no: "No",
         incomp: "Incompatible relation with sets of departure and arrival!",
-        invalid: "Invalid Departure and Arrival Sets!",
+        invalid: "Invalid Departure and Arrival Sets! Remember: each element can't be longer than 3 alphanumeric characters.",
         errore: "Input Error",
         chiudi: "Close",
-        proprieta: "Properties"
+        proprieta: "Properties",
+        invalidRelation:"Invalid Relation, please use format <1,2>,<3,2>"
     }
 };
 const ITEM_HEIGHT = 48;
@@ -137,22 +139,28 @@ class Programma extends Component {
     };
     controlla = () => {
         this.setState({ ok: false, hasse: null, riflessiva: false, simmetrica: false, transitiva: false, antisimmetrica: false, reticolo: false, insiemeTotalmenteOrdinato: false, equivalenza: false, poset: false, eleMax: [], eleMin: [] });
-        const c = this.state.R;
-        if (this.state.A.length === 0 || this.state.B.length === 0) {
+        const c = this.parseRelazione(this.state.R);
+        const insiemeA = this.parseInsieme(this.state.A).split(',');
+        const insiemeB = this.parseInsieme(this.state.B).split(',');
+        if (insiemeA.length < 1 || insiemeB.length < 1||insiemeA[0].length<1||insiemeB[0].length<1) {
             this.apriDialogo(traduzioni[this.state.lingua].invalid);
             return;
         }
-        const insiemeA = this.state.A.split(',');
-        const insiemeB = this.state.B.split(',');
         let pattern = new RegExp("<([a-zA-Z0-9]+,[a-zA-Z0-9]+)>", "ig");
         let first = [];
         let second = [];
         let match;
+        let trovato = false;
         while ((match = pattern.exec(c)) !== null) {
             let mat = match[1];
             let parts = mat.split(",");
             first.push(parts[0]);
             second.push(parts[1]);
+            trovato = true;
+        }
+        if (!trovato) {
+            this.apriDialogo(traduzioni[this.state.lingua].invalidRelation);
+            return;
         }
         if (!this.checkInsieme(insiemeA, first) || !this.checkInsieme(insiemeB, second)) {
             this.apriDialogo(traduzioni[this.state.lingua].incomp);
@@ -177,6 +185,23 @@ class Programma extends Component {
         }
         this.setState({ ok: true, riflessiva, simmetrica, transitiva, antisimmetrica, reticolo, insiemeTotalmenteOrdinato, equivalenza, poset, eleMax, eleMin, hasse });
         this.forceUpdate();
+    }
+    parseInsieme(insieme) {
+        if (typeof insieme === 'string') {
+            let insi = insieme.replace(" ", "");
+            if ( insi.length>0) {
+                let inssep = insi.split(",");
+                for (let i = 0; i < inssep.length; i++)
+                    if (inssep[i].length > 3 || inssep[i].length < 1 || inssep[i] < '0' || inssep[i] > 'z' || (inssep[i] > '9' && inssep[i] < 'A') || (inssep[i] > 'Z' && inssep[i]<'a')) {
+                        return "";
+                    }
+                return insi;
+            }
+        }
+       return "";
+    }
+    parseRelazione(relazione) {
+        return relazione.replace(" ", "");
     }
     isRiflessiva(a, b) {
         if (a.length !== b.length)
@@ -269,7 +294,7 @@ class Programma extends Component {
             }
         }
         if (index === 0)
-            return null;
+            return [];
         return array;
     }
     elementiMinimali(a, b) {
@@ -291,7 +316,7 @@ class Programma extends Component {
             }
         }
         if (index === 0)
-            return null;
+            return [];
         return array;
     }
     isReticolo(a, b) {
@@ -442,6 +467,7 @@ class Programma extends Component {
                                         variant="outlined"
                                         onChange={this.cambia('A')}
                                         className="textfield"
+                                        inputProps={{ autocapitalize: "none" }}
                                     />
                                 </td>
                             </tr>
@@ -453,6 +479,7 @@ class Programma extends Component {
                                         variant="outlined"
                                         onChange={this.cambia('B')}
                                         className="textfield"
+                                        inputProps={{ autocapitalize: "none" }}
                                     />
                                 </td>
                             </tr>
@@ -464,6 +491,8 @@ class Programma extends Component {
                                         variant="outlined"
                                         onChange={this.cambia('R')}
                                         className="textfield"
+                                        inputProps={{autocapitalize:"none"}}
+                                        
                                     />
                                 </td>
                             </tr>
