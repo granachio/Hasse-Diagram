@@ -5,10 +5,12 @@
   "main": "index.js",
   "homepage": "https://granachio.github.io/Hasse-Diagram/build/",
   "dependencies": {
-    "react": "^16.4.0",
-    "react-dom": "^16.4.0",
-    "@material-ui/core": "^3.6.1",
-    "@material-ui/icons": "^3.0.1"
+    "@material-ui/core": "^3.9.2",
+    "@material-ui/icons": "^3.0.2",
+    "react": "^16.7.0",
+    "react-device-detect": "^1.6.2",
+    "react-dom": "^16.7.0",
+    "react-simple-keyboard": "^1.15.2"
   },
   "devDependencies": {
     "react-scripts": "^2.1.3"
